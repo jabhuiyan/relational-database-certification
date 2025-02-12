@@ -4,7 +4,7 @@
 PSQL="psql -X --username=freecodecamp --dbname=number_guess --tuples-only -c"
 
 
-START_GAME() {
+NUMBER_GUESS_GAME() {
   # ask user for username
   echo "Enter your username:"
   read USERNAME
@@ -19,7 +19,6 @@ START_GAME() {
     INSERT_NEW_USER=$($PSQL "INSERT INTO users(username) VALUES('$USERNAME')")
     if [[ $INSERT_NEW_USER == "INSERT 0 1" ]]
     then
-      # if new user added successfully
       echo "Welcome, $USERNAME! It looks like this is your first time here."
     fi
   else
@@ -40,27 +39,24 @@ START_GAME() {
   do
     if [[ ! $GUESS =~ ^[0-9]+$ ]]
     then
-      # if guess is not an integer
       echo "That is not an integer, guess again:"
       read GUESS
     else
-      # if guess is an integer then increment number of guesses
+      # increment number of guesses
       (( NUMBER_OF_GUESSES++ ))
       if [[ $GUESS -gt $SECRET_NUMBER ]]
       then
-        # if guess is higher than secret number
         echo "It's lower than that, guess again:"
         read GUESS
       elif [[ $GUESS -lt $SECRET_NUMBER ]]
       then
-        # if guess is lower than secret number
         echo "It's higher than that, guess again:"
         read GUESS
       fi
     fi
   done
 
-  # Increment the number of guesses for the correct guess
+  # increment the number of guesses
   (( NUMBER_OF_GUESSES++ ))
 
   UPDATE_USER_DETAILS=$($PSQL "
@@ -81,4 +77,4 @@ START_GAME() {
   fi
 }
 
-START_GAME
+NUMBER_GUESS_GAME
